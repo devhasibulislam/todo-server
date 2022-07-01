@@ -26,20 +26,19 @@ async function run() {
         const todoCollection = client.db('todoApp').collection('todoLists');
         console.log('Todo app connected with MongoDB');
 
+        // C = create
         app.post('/todo', async (req, res) => {
             const todoDoc = req.body;
             const todoResult = await todoCollection.insertOne(todoDoc);
             res.send(todoResult);
         })
 
+        // R = read
         app.get('/todo', async (req, res) => {
             res.send(await todoCollection.find({}).toArray());
         })
 
-        app.delete('/todo/:id', async (req, res) => {
-            res.send(await todoCollection.deleteOne({ _id: ObjectId(req.params.id) }));
-        })
-
+        // U = update
         app.put('/todo/:id', async (req, res) => {
             const id = req.params.id;
             const body = req.body;
@@ -50,6 +49,11 @@ async function run() {
             }
             const result = await todoCollection.updateOne(filter, updateDoc, option);
             res.send(result);
+        })
+
+        // D = delete
+        app.delete('/todo/:id', async (req, res) => {
+            res.send(await todoCollection.deleteOne({ _id: ObjectId(req.params.id) }));
         })
     } finally {
         // await client.close();
